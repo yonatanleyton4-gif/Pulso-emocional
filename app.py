@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-from datetime import datetime
+from datetime import datetime, timedelta
 from collections import Counter
 import os
 
@@ -26,8 +26,8 @@ class User(UserMixin, db.Model):
 class Registro(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     emocion = db.Column(db.String(20))
-    fecha = db.Column(db.DateTime, default=datetime.now)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    fecha = db.Column(db.DateTime, default=lambda: datetime.utcnow() - timedelta(hours=5))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 @login_manager.user_loader
 def load_user(user_id):
