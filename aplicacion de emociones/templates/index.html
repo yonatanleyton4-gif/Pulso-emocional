@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diario de Emociones</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Hola, {{ username }}!</h1>
+            <p>¿Como va tu dia?</p>
+        </header>
+    </div>
+
+    <form  action="/registrar" method="POST">
+        <div class="card-grid">
+            <label class="card-option">
+                <input type="radio" name="emocion" value="Feliz" required>
+                <div class="card-content">
+                    <span class="emoji">😊</span>
+                    <span>Feliz</span>
+                </div>
+            </label>
+            <label class="card-option">
+                <input type="radio" name="emocion" value="Triste">
+                <div class="card-content">
+                    <span class="emoji">😢</span>
+                    <span>Triste</span>
+                </div>
+            </label>
+            <label class="card-option">
+                <input type="radio" name="emocion" value="Enojo">
+                <div class="card-content">
+                    <span class="emoji">😠</span>
+                    <span>Con enojo</span>
+                </div>
+            </label>
+            <label class="card-option">
+                <input type="radio" name="emocion" value="Estres">
+                <div class="card-content">
+                    <span class="emoji">🤯</span>
+                    <span>Con estres</span>
+                </div>
+            </label>
+        </div>
+        <button type="submit" class="btn-primary">Guardar Momento</button>
+    </form>
+
+    <nav class="mobile-nav">
+        <div><a href="{{ url_for('stats') }}">Estadísticas</a></div>
+        <div><a href="/logout" class="logout-link">Cerrar Sesión</a></div>
+    </nav>
+</body>
+</html>
