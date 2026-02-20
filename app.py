@@ -44,22 +44,25 @@ def index():
     if current_user.id == 0:
         return redirect(url_for('stats'))
     return render_template('index.html', username=current_user.username)
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        user_input = request.form.get('username')
-        pass_input = request.form.get('password')
+        user_input = request.form.get('username').strip() # Quitamos espacios invisibles
+        pass_input = request.form.get('password').strip()
 
+        # CASO ESPECIAL: ARMANDO PALACIOS
         if user_input == "Armando_Palacios" and pass_input == "17102009":
             profe = User.query.filter_by(username="Armando_Palacios").first()
-            if not profe: # Si no existe en la DB, lo creamos una sola vez
-                profe = User(id=0, username="Armando_Palacios", password="17102009", curso="ADMIN")
+            if not profe:
+                # Si no existe, lo creamos con un ID alto para evitar conflictos con el ID 0
+                profe = User(id=999, username="Armando_Palacios", password="17102009", curso="ADMIN")
                 db.session.add(profe)
                 db.session.commit()
+            
             login_user(profe)
             return redirect(url_for('stats'))
 
+        # LOGIN ALUMNOS
         user = User.query.filter_by(username=user_input).first()
         if user and user.password == pass_input:
             login_user(user)
