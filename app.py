@@ -7,7 +7,11 @@ import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'clave_secreta_para_la_profe'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///emociones.db'
+# Coloca esto justo arriba de la línea 10
+basedir = os.path.abspath(os.path.dirname(__file__))
+
+# Modifica la línea 10 para que quede así:
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'emociones.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
