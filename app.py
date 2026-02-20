@@ -184,24 +184,29 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        # .strip() elimina espacios invisibles que causan errores al escribir
         user_input = request.form.get('username').strip()
         pass_input = request.form.get('password').strip()
 
-        # PUERTA MAESTRA: ARMANDO PALACIOS
+        # ACCESO DIRECTO PARA ARMANDO (Sin pasar por la DB primero)
         if user_input == "Armando_Palacios" and pass_input == "17102009":
+            # Buscamos si existe para tener sus datos, si no, usamos un objeto temporal
             profe = User.query.filter_by(username="Armando_Palacios").first()
             if not profe:
-                # Si no existe en la BD de la nube, lo creamos ahora mismo
-                profe = User(id=999, username="Armando_Palacios", password="17102009", curso="ADMIN")
-                db.session.add(profe)
-                db.session.commit()
+                try:
+                    profe = User(id=0, username="Armando_Palacios", password="17102009", curso="ADMIN")
+                    db.session.add(profe)
+                    db.session.commit()
+                except:
+                    db.session.rollback()
+                    # Si la base de datos falla, creamos el objeto en memoria para dejarlo pasar
+                    profe = User(id=0, username="Armando_Palacios", password="17102009", curso="ADMIN")
+            
             login_user(profe)
             return redirect(url_for('stats'))
 
-        # LOGIN NORMAL
-        user = User.query.filter_by(username=user_input).first()
-        if user and user.password == pass_input:
+        # LOGIN ALUMNOS
+        user = User.query.filter_by(username=user_input, password=pass_input).first()
+        if user:
             login_user(user)
             return redirect(url_for('index'))
         
@@ -259,9 +264,9 @@ def stats():
         frecuente = "N/A"
 
     return render_template('stats.html', 
-                           total_registros=total, 
-                           emocion_frecuente=frecuente, 
-                           ultima_emocion=ultima)
+                            total_registros=total, 
+                            emocion_frecuente=frecuente, 
+                            ultima_emocion=ultima)
 
 @app.route('/logout')
 @login_required
