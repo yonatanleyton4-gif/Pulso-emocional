@@ -10,8 +10,18 @@ app.config['SECRET_KEY'] = 'clave_secreta_para_la_profe'
 # Coloca esto justo arriba de la línea 10
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-# Modifica la línea 10 para que quede así:
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'emociones.db')
+# Reemplaza la antigua configuración de la base de datos por esta:
+database_url = os.environ.get('DATABASE_URL')
+
+if database_url:
+    # Si detecta la base de datos de Neon en Render
+    if database_url.startswith("postgres://"):
+        database_url = database_url.replace("postgres://", "postgresql://", 1)
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+else:
+    # Si estás trabajando en tu PC localmente
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'emociones.db')
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
