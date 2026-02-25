@@ -137,8 +137,6 @@ def logout():
     return redirect(url_for('login'))
 
 if __name__ == '__main__':
-    import os
-    # Render asigna un puerto automáticamente, esto lo captura:
-    port = int(os.environ.get("PORT", 5000))
-    # Importante: host='0.0.0.0' para que sea visible en internet
+    # No fijes el puerto a 5000, deja que el entorno decida
+    port = int(os.environ.get("PORT", 10000))
     app.run(host='0.0.0.0', port=port)
